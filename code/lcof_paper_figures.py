@@ -38,9 +38,9 @@ def calc_performance_metrics(data_path: str):
         pd = -np.sum(discharging_power * dT) / (timeperiod * np.mean(baseline_power * dT))
 
         # compute cost differences
-        cost_difference = dT * power_difference * electricity_TOU
-        charging_cost = np.where(flexible_power > baseline_power, cost_difference, 0)
-        discharging_cost = np.where(flexible_power < baseline_power, cost_difference, 0)
+        energy_cost_difference = dT * power_difference * electricity_TOU
+        charging_cost = np.where(flexible_power > baseline_power, energy_cost_difference, 0)
+        discharging_cost = np.where(flexible_power < baseline_power, energy_cost_difference, 0)
         total_charging_cost = np.sum(charging_cost)
         total_discharging_cost = np.sum(discharging_cost)
 
@@ -57,10 +57,10 @@ def calc_performance_metrics(data_path: str):
         max_demand_charge_savings = flexible_max_demand_charge - baseline_max_demand_charge
 
         # total cost savings
-        total_cost_savings = np.sum(cost_difference) + peak_demand_charge_savings + max_demand_charge_savings
+        total_cost_savings = np.sum(energy_cost_difference) + peak_demand_charge_savings + max_demand_charge_savings
         
         # calculate the savings per unit of discharged energy $/MWh
-        flex_savings = 1000*total_cost_savings / np.sum(discharging_power * dT)
+        flex_savings = 1000*np.abs(total_cost_savings) / np.abs(np.sum(discharging_power * dT))
 
         # put results in a dictionary
         results = {'rte': rte, 'ed': ed, 'pd': pd, 'flex_savings': flex_savings}
@@ -70,7 +70,7 @@ def calc_performance_metrics(data_path: str):
 def calc_cost_metrics(data_path: str,
                       upgrade_fraction: float = 0.1,
                       obsolete_asset_fraction: float = 0.1,
-                      om_increase_fraction: float = 0.005,
+                      om_increase_fraction: float = 0.00,
                       discount_rate: float = 0.03,
                       facility_lifetime: float = 25,
                       upgrade_year: float = 0):
@@ -130,13 +130,15 @@ def calc_cost_metrics(data_path: str,
         discharging_cost = np.where(flexible_power < baseline_power, cost_difference, 0)
         total_charging_cost = np.sum(charging_cost)
         total_discharging_cost = np.sum(discharging_cost)
-        reference_cost = (time_annualization) * (np.sum(baseline_power * electricity_TOU))
-
 
         # baseline demand charges
         baseline_peak_demand_charge = np.max(baseline_power * electricity_demand_peak)
         baseline_max_demand_charge = np.max(baseline_power * electricity_demand_max)
-        
+        reference_cost = (time_annualization) * (np.sum(baseline_power * electricity_TOU)
+                                            + baseline_max_demand_charge
+                                            + baseline_peak_demand_charge)
+
+
         # flexible demand charges
         flexible_peak_demand_charge = np.max(flexible_power * electricity_demand_peak)
         flexible_max_demand_charge = np.max(flexible_power * electricity_demand_max)
@@ -229,8 +231,8 @@ def create_timeseries_plot(data_path: str,
     return fig, ax     
 
 def create_lcof_contour(data_path,
-                                upg_range=[0,0.5],
-                                obs_range=[0,0.5],
+                                upg_range=[0,0.1],
+                                obs_range=[0,0.1],
                                 save_path = None,
                                 fig_format = 'svg'
                                 ):
@@ -239,8 +241,8 @@ def create_lcof_contour(data_path,
     obs_range: range of obsolete fractions to test
     """
     # create arrays for upgrade and obsolete fraction
-    upg = np.linspace(upg_range[0], upg_range[1], 20)
-    obs = np.linspace(obs_range[0], obs_range[1], 20)
+    upg = np.linspace(upg_range[0], upg_range[1], 10)
+    obs = np.linspace(obs_range[0], obs_range[1], 10)
     upg_grid, obs_grid = np.meshgrid(upg, obs)
 
     # calculate cost metrics
@@ -250,9 +252,11 @@ def create_lcof_contour(data_path,
     fig, ax = plt.subplots(dpi = 300, figsize=(6,5))
     plt.rcParams.update({'font.size': 16})    # make all fonts size 16
 
-    contour = ax.contourf(upg*100, obs*100, lcof, np.arange(0, 300, 10), cmap='YlGnBu_r')
+    contour = ax.contourf(upg*100, obs*100, lcof, np.arange(0, round(np.max(lcof), -2), 25), cmap='YlGnBu_r')
+    equilibrium = ax.contour(upg*100, obs*100, lcof, [flex_b[0,0]], colors='k')    # add an isoline at the equilibrium point
     cbar = fig.colorbar(contour, ax=ax)
-    ax.contour(upg*100, obs*100, lcof, [flex_b[0,0]], colors='k')    # add an isoline at the equilibrium point
+    # add an isoline on the colorbar at flex_b[0,0]
+    cbar.add_lines(equilibrium)
     ax.set_xlabel('Upgrade Cost Ratio [%]')
     ax.set_ylabel('Obsolete Cost Ratio [%]')
     cbar.set_label('Levelized Cost of Flexibility [$/MWh]')
@@ -272,7 +276,8 @@ def create_metrics_radar(data_path: str,
                         TITLE: str = None,
                         ax = None,
                         save_path = None,
-                        fig_format = 'svg'
+                        fig_format = 'svg',
+                        system_name = "AWT",
                         ):
     
     # get metrics
@@ -289,7 +294,12 @@ def create_metrics_radar(data_path: str,
 
     # Define colors
     BG_WHITE = "#FFFFFF"
-    BLUE = "#01665e"
+    systems = ["AWT", "WSD", "WWT"]
+    SYS_COLORS = ["#8da0cb", "#66c2a5", "#fc8d62"]
+    # get the array index of the system name
+    system_idx = systems.index(system_name)
+    system_color = SYS_COLORS[system_idx]
+    SYS_COLOR = system_color
     GREY70 = "#808080"
     GREY_LIGHT = "#f2efe8"
     COLORS = ["#FF5A5F", "#FFB400", "#007A87"]
@@ -367,7 +377,7 @@ def create_metrics_radar(data_path: str,
 
     ax.plot([0, 2*np.pi/3, 4*np.pi/3, 0], METRICS + [METRICS[0]], lw = 1, c = 'k')
     # fill area inside triangle 
-    ax.fill([0, 2*np.pi/3, 4*np.pi/3, 0], METRICS + [METRICS[0]], BLUE, alpha = 0.75)
+    ax.fill([0, 2*np.pi/3, 4*np.pi/3, 0], METRICS + [METRICS[0]], SYS_COLOR, alpha = 0.75)
     # Set values for the angular axis (x)
     ax.set_xticks(ANGLES[:-1])
     ax.set_xticklabels(LABELS, size=14)
@@ -385,7 +395,15 @@ def create_metrics_radar(data_path: str,
 
 def create_fig3_subfigures(data_path: str, 
                            save_path: str = None,
-                           fig_format: str = 'svg'):
+                           fig_format: str = 'svg',
+                           system_name: str = 'AWT',):
+    """
+    Create the subfigures for figure 3 in the paper.
+    data_path: path to the simulation results csv file
+    save_path: path to save the figure, (default = None)
+    fig_format: format to save the figure in, (default = 'svg')
+    system_name: name of the system to identify color, ('AWT', 'WSD', 'WWT')
+    """
 
     # create time timeseries plot 
     fig0, ax0 = create_timeseries_plot(data_path = data_path,
@@ -394,7 +412,8 @@ def create_fig3_subfigures(data_path: str,
     # create the radar plot
     fig1, ax1 = create_metrics_radar(data_path = data_path, 
                                    save_path = save_path,
-                                   fig_format = fig_format)
+                                   fig_format = fig_format,
+                                   system_name = system_name)
 
     # create the contour plot
     fig2, ax2 = create_lcof_contour(data_path = data_path,
@@ -404,6 +423,9 @@ def create_fig3_subfigures(data_path: str,
 
 
 if __name__ == 'main':
-    data_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/results.csv'
-    results = calc_cost_metrics(data_path)
-    print(results)
+    data_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + 'flexibility/sim_results/sb.csv'
+    calc_cost_metrics(data_path, upgrade_fraction= 0, obsolete_asset_fraction=0)
+    create_fig3_subfigures(data_path = data_path, 
+                           save_path = None,
+                           fig_format = 'svg',
+                           system_name = 'AWT',)
