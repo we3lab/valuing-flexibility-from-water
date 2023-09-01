@@ -16,7 +16,3 @@ electric,energy,,0,10,12,16,21,0,6,0.18182,$/kWh,
 electric,energy,,0,10,12,0,8,0,6,0.07083,$/kWh,
 electric,energy,,0,10,12,21,24,0,6,0.07083,$/kWh,
 electric,energy,,0,10,12,8,16,0,6,0.11362,$/kWh,
-gas,customer,,,,,,,,,14.7945,$/month,Estimated from multiplying cost of 1 meter for 1 day by 30 days
-gas,energy,,0,1,12,0,24,0,6,1.49844,$/therm,
-gas,energy,,250,1,12,0,24,0,6,1.03166,$/therm,
-gas,energy,,4167,1,12,0,24,0,6,0.71868,$/therm,
