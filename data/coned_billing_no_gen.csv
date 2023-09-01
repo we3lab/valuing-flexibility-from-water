@@ -1,0 +1,10 @@
+utility,type,period,basic_charge_limit,month_start,month_end,hour_start,hour_end,weekday_start,weekday_end,charge,units,Notes
+electric,customer,,,,,,,,,500,$/month,Consolidated Edison – Rate II – General – Large – Time-of-day (2023 rates)
+electric,energy,,0,1,12,0,24,0,6,0.0079,$/kWh,Includes delivery (no gen. charges)
+electric,demand,winter-peak1,0,1,5,8,22,0,4,16.53,$/kW,
+electric,demand,winter-all-hours1,0,1,5,0,24,0,6,4.98,$/kW,
+electric,demand,summer-peak,0,6,9,8,22,0,4,20.75,$/kW,
+electric,demand,summer-super-peak,0,6,9,8,18,0,4,10.3,$/kW,
+electric,demand,summer-all-hours,0,6,9,0,24,0,6,18.75,$/kW,
+electric,demand,winter-peak2,0,10,12,8,22,0,4,16.53,$/kW,
+electric,demand,winter-all-hours2,0,10,12,0,24,0,6,4.98,$/kW,
