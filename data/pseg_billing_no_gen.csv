@@ -1,0 +1,5 @@
+﻿utility,type,period,basic_charge_limit (imperial),basic_charge_limit (metric),month_start,month_end,hour_start,hour_end,weekday_start,weekday_end,charge (imperial),charge (metric),units,Notes
+electric,customer,,,,,,,,,,392.35,392.35,$/month,Public Service Electric And Gas
+electric,energy,,0,0,1,12,0,24,0,6,0,0,$/kWh,This really is zero
+electric,demand,annual,0,0,1,12,0,24,0,6,1.7634,1.7634,$/kW,Assumed primary voltage
+electric,demand,summer,0,0,6,9,7,21,0,4,9.7891,9.7891,$/kW,
