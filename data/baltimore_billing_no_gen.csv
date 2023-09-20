@@ -1,4 +1,0 @@
-utility,type,period,basic_charge_limit,month_start,month_end,hour_start,hour_end,weekday_start,weekday_end,charge,units,Notes
-electric,customer,,,,,,,,,660,$/month,Baltimore Gas and Electric – Schedule P (2023 rates)
-electric,energy,,0,1,5,0,7,0,4,0.00592,$/kWh,Flat delivery charge of 0.00592 (no generation charges)
-electric,demand,annual,0,1,12,0,24,0,6,7.13,$/kW,Delivery charge plus transmission charge
