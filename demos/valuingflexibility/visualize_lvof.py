@@ -99,31 +99,33 @@ def __():
         flexible_power = sim_data['flexible_grid_to_plant_kW'].values / 1000    # convert from kW to MW
 
         # plot the timeseries on the same subplot
-        plt.rcParams.update({'axes.labelsize': 18,
-                            'xtick.labelsize': 16,
+        plt.rcParams.update({'axes.labelsize': 12,
+                            'xtick.labelsize': 12,
                             'xtick.major.width': 2,
-                            'ytick.labelsize': 16,
+                            'ytick.labelsize': 12,
                             'ytick.major.width': 2,
-                            'legend.fontsize': 16,
-                            'font.size': 16,
+                            'legend.fontsize': 12,
+                            'font.size': 12,
                             'axes.linewidth': 0.5,
                             'lines.linewidth': 2.,
                             'lines.markersize': 1.,
-                            'legend.fontsize': 'medium',
-                            'figure.titlesize': 'medium',
                             'font.size': 12})
 
         if ax is None:
             fig, ax = plt.subplots(figsize=(10, 6))
 
+        b_norm = baseline_power / np.mean(baseline_power)
+        f_norm = flexible_power / np.mean(baseline_power)
+
+
         # plot flexible power in #01665e using a step function
-        ax.step(t, flexible_power, 
+        ax.step(t, f_norm, 
                 color=system_line_color(system_type), 
                 label='Flexible',
                 where='post')
 
         # plot baseline power in black with dashed line
-        ax.step(t, baseline_power, 
+        ax.step(t, b_norm, 
                 color='black', 
                 label='Baseline',
                 where='post')
@@ -132,12 +134,10 @@ def __():
 
         ax.set_xlim([t[0], t[-1]])
 
-        max_power = max(max(baseline_power), max(flexible_power))
-
         # set the ylim to 0 and 1.2 times the maximum power
-        ax.set_ylim([0, 1.2 * max_power])
+        ax.set_ylim([0, 2])
         ax.set_xlabel('Time [hr]')
-        ax.set_ylabel('Load [MW]')
+        ax.set_ylabel('Normalized Load')
 
         ax.set_title('{}\n{}\n{}'.format(full_system_label(system_type), reformat_case_name(case_name), representative_day), fontsize = 14)
 
@@ -158,8 +158,8 @@ def __():
             PowerCapacity = sim_data['p_normalized']
 
             LABELS = ["Round-Trip\nEfficiency", 
-                            "Normalized\nEnergy\nCapacity", 
-                            "Normalized\nPower\nCapacity"]
+                            "Energy\nCapacity\n(Normalized)", 
+                            "Power\nCapacity\n(Normalized)"]
             METRICS = [RTE, EnergyCapacity, PowerCapacity]
             N = 3
 
@@ -256,9 +256,10 @@ def __():
                     alpha = 0.75)
 
             # Set values for the angular axis (x)
-            ax.set_xticks(ANGLES[:-1], )
-            ax.set_xticklabels(LABELS, size=8)
-            ax.set_title('{}\n{}\n{}'.format(full_system_label(system_type), reformat_case_name(case_name), representative_day), fontsize = 10)
+            ax.set_xticks(ANGLES[:-1])
+            ax.set_xticklabels(LABELS, size=10)
+            ax.yaxis.labelpad = 15
+            ax.set_title('{}\n{}\n{}'.format(full_system_label(system_type), reformat_case_name(case_name), representative_day), fontsize = 12)
 
 
             return ax
@@ -271,13 +272,13 @@ def __():
                         cbar_range = [-200, 200],
                         axis_range = [[0, 1], [0, 1]]):
             # plot the timeseries on the same subplot
-            plt.rcParams.update({'axes.labelsize': 18,
-                                'xtick.labelsize': 16,
+            plt.rcParams.update({'axes.labelsize': 12,
+                                'xtick.labelsize': 12,
                                 'xtick.major.width': 2,
-                                'ytick.labelsize': 16,
+                                'ytick.labelsize': 12,
                                 'ytick.major.width': 2,
-                                'legend.fontsize': 16,
-                                'font.size': 16,
+                                'legend.fontsize': 12,
+                                'font.size': 21,
                                 'axes.linewidth': 0.5,
                                 'lines.linewidth': 1.,
                                 'lines.markersize': 1.,
@@ -311,8 +312,8 @@ def __():
 
             ax.set_xticks(np.linspace(axis_range[0][0], axis_range[0][1], 5).round(2))
             ax.set_yticks(np.linspace(axis_range[1][0], axis_range[1][1], 5).round(2))
-            ax.set_xlabel('Capital Upgrade Cost [$M]')
-            ax.set_ylabel('Obsolete Asset Cost [$M]')
+            ax.set_xlabel('Capital Upgrade Cost [$M]', fontsize = 12)
+            ax.set_ylabel('Obsolete Asset Cost [$M]', fontsize = 12)
             cbar.set_label('Levelized Value of Flexibility [$/MWh]', fontsize = 12)
             ax.set_title('{}\n{}'.format(full_system_label(system_type), reformat_case_name(case_name)), fontsize = 14)
             return fig, ax
@@ -390,62 +391,79 @@ def __():
 
 @app.cell
 def __(mo):
-    mo.md("#Timeseries Plot Comparison")
+    mo.md("#Operating Schema Comparison")
     return
-
 
 @app.cell
 def __(mo):
-    ts_A_dropdown = mo.ui.array([mo.ui.dropdown(
-            label="Select Case City for Timeseries Plot A",
+    mo.md("This section compares the operating schema of two different configurations.")
+    return 
+@app.cell
+def __(mo):
+    mo.md("Select the configuration options for the operating schema A.")
+    return
+@app.cell
+def __(mo):
+    ts_A_case_name = mo.ui.dropdown(
+            label="Select Case City:",
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
-            value = "houston"),
-        mo.ui.dropdown(
-            label="Select System Type for Timeseries Plot A",
+            value = "santabarbara")
+    ts_A_case_name
+    return ts_A_case_name
+    
+@app.cell
+def __(mo):
+    ts_A_sys_name = mo.ui.dropdown(
+            label="Select System Type:",
             options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")],
-        label = 'Configuration Options for Timeseries Plot A')
-    ts_A_dropdown
-    return ts_A_dropdown,
+            value = "AWT_curtailed")
+    ts_A_sys_name
+    return ts_A_sys_name
 
 
 @app.cell
-def __(mo, ts_A_dropdown, valid_repdays):
-    valid_day_ts_a = valid_repdays(case_name=ts_A_dropdown.value[0],
-                                  system_type= ts_A_dropdown.value[1],
+def __(mo, ts_A_case_name, ts_A_sys_name, valid_repdays):
+    valid_day_ts_a = valid_repdays(case_name=ts_A_case_name.value,
+                                  system_type= ts_A_sys_name.value,
                                   plot_type='timeseries')
     ts_A_day = mo.ui.dropdown(
-            label="Select Representative Day for Timeseries Plot A",
+            label="Select Representative Day:",
             options= valid_day_ts_a,
             value = "")
     ts_A_day
     return ts_A_day, valid_day_ts_a
 
+@app.cell
+def __(mo):
+    mo.md("Select the configuration options for the operating schema B.")
+    return
 
 @app.cell
 def __(mo):
-    ts_B_dropdown = mo.ui.array([
-        mo.ui.dropdown(
-            label="Select Case City for Timeseries Plot B",
+    ts_B_case_name = mo.ui.dropdown(
+            label="Select Case City:",
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
-            value = "houston"),
-        mo.ui.dropdown(
-            label="Select System Type for Timeseries Plot B",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_nominal")],
-            label = 'Configuration Options for Timeseries Plot B')
+            value = "santabarbara")
+    ts_B_case_name
+    return ts_B_case_name
 
-    ts_B_dropdown
-    return ts_B_dropdown,
+@app.cell
+def __(mo):
+    ts_B_sys_name = mo.ui.dropdown(
+            label="Select System Type:",
+            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
+            value = "AWT_nominal")
+    ts_B_sys_name
+    return ts_B_sys_name
 
 
 @app.cell
-def __(mo, ts_B_dropdown, valid_repdays):
-    valid_day_ts_b = valid_repdays(case_name=ts_B_dropdown.value[0],
-                                  system_type= ts_B_dropdown.value[1],
+def __(mo, ts_B_case_name, ts_B_sys_name, valid_repdays):
+    valid_day_ts_b = valid_repdays(case_name=ts_B_case_name.value,
+                                  system_type= ts_B_sys_name.value,
                                   plot_type='timeseries')
     ts_B_day = mo.ui.dropdown(
-            label="Select Representative Day for Timeseries Plot B",
+            label="Select Representative Day",
             options= valid_day_ts_b,
             value = "")
     ts_B_day
@@ -460,43 +478,57 @@ def __(
     plt,
     reformat_case_name,
     ts_A_day,
-    ts_A_dropdown,
+    ts_A_case_name,
+    ts_A_sys_name,
     ts_B_day,
-    ts_B_dropdown,
-):
+    ts_B_case_name,
+    ts_B_sys_name
+    ):
     fig_ts, ax_ts = plt.subplots(1,2,figsize=(10, 6))
 
     try:
-        sim_dataA = get_sim_data(ts_A_dropdown.value[0], ts_A_dropdown.value[1], ts_A_day.value, 'timeseries')
+        sim_dataA = get_sim_data(ts_A_case_name.value, ts_A_sys_name.value, ts_A_day.value, 'timeseries')
         ax_ts[0] = plot_timeseries(sim_dataA, 
-                       case_name=ts_A_dropdown.value[0],
-                       system_type=ts_A_dropdown.value[1],
+                       case_name=ts_A_case_name.value,
+                       system_type=ts_A_sys_name.value,
                        representative_day=ts_A_day.value,
                                ax = ax_ts[0])
     except:
-        ax_ts[0].set_title('{}\n{}\n{}'.format(full_system_label(ts_A_dropdown.value[1]), 
-                                               reformat_case_name(ts_A_dropdown.value[0]), 
+        ax_ts[0].set_title('{}\n{}\n{}'.format(full_system_label(ts_A_case_name.value), 
+                                               reformat_case_name(ts_A_sys_name.value), 
                                                ts_A_day.value), 
-                                               fontsize = 14)
-        ax_ts[0].text(0.5, 0.5, 'Data not available', 
+                                               fontsize = 12)
+        if ts_A_day.value == "":
+            ax_ts[0].text(0.5, 0.5, 'Select a representative day', 
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[0].transAxes)
+        else:
+            ax_ts[0].text(0.5, 0.5, 'Data not available', 
+                        horizontalalignment='center',
+                        verticalalignment='center', 
+                        transform=ax_ts[0].transAxes)
 
     try:
 
-        sim_dataB = get_sim_data(ts_B_dropdown.value[0], ts_B_dropdown.value[1], ts_B_day.value, 'timeseries')
+        sim_dataB = get_sim_data(ts_B_case_name.value, ts_B_sys_name.value, ts_B_day.value, 'timeseries')
         ax_ts[1] = plot_timeseries(sim_dataB, 
-                       case_name=ts_B_dropdown.value[0],
-                       system_type=ts_B_dropdown.value[1],
+                       case_name=ts_B_case_name.value,
+                       system_type=ts_B_sys_name.value,
                        representative_day=ts_B_day.value,
                                ax = ax_ts[1])
 
     except:
-        ax_ts[1].set_title('{}\n{}\n{}'.format(full_system_label(ts_B_dropdown.value[1]), 
-                                               reformat_case_name(ts_B_dropdown.value[0]), 
-                                               ts_B_day.value), fontsize = 14)
-        ax_ts[1].text(0.5, 0.5, 'Data not available', 
+        ax_ts[1].set_title('{}\n{}\n{}'.format(full_system_label(ts_B_sys_name.value), 
+                                               reformat_case_name(ts_B_case_name.value), 
+                                               ts_B_day.value), fontsize = 12)
+        if ts_B_day.value == "":
+            ax_ts[1].text(0.5, 0.5, 'Select a representative day', 
+                      horizontalalignment='center',
+                      verticalalignment='center', 
+                      transform=ax_ts[1].transAxes)
+        else:
+            ax_ts[1].text(0.5, 0.5, 'Data not available', 
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[1].transAxes)
@@ -511,29 +543,37 @@ def __(mo):
     mo.md("#Energy Performance Metrics Comparison")
     return
 
+@app.cell(hide_code=True)
+def __(mo):
+    mo.md("This section compares the energy performance metrics of two different configurations.")
+    return
 
 @app.cell
 def __(mo):
-    radar_A_dropdown = mo.ui.array([mo.ui.dropdown(
-            label="Select Case City",
+    radar_A_case_name = mo.ui.dropdown(
+            label="Select Case City:",
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
-            value = "houston"),
-        mo.ui.dropdown(
-            label="Select System Type",
+            value = "santabarbara")
+    radar_A_case_name
+    return radar_A_case_name
+
+@app.cell
+def __(mo):
+    radar_A_sys_name = mo.ui.dropdown(
+            label="Select System Type:",
             options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")],
-        label = 'Configuration Options for Radar Plot A')
-    radar_A_dropdown
-    return radar_A_dropdown,
+            value = "AWT_curtailed")
+    radar_A_sys_name
+    return radar_A_sys_name
 
 
 @app.cell
-def __(mo, radar_A_dropdown, valid_repdays):
-    valid_day_r_a = valid_repdays(case_name=radar_A_dropdown.value[0],
-                                  system_type= radar_A_dropdown.value[1],
+def __(mo, radar_A_case_name, radar_A_sys_name, valid_repdays):
+    valid_day_r_a = valid_repdays(case_name=radar_A_case_name.value,
+                                  system_type= radar_A_sys_name.value,
                                   plot_type='radar')
     r_day_A = mo.ui.dropdown(
-        label="Select Representative Day",
+        label="Select Representative Day:",
         options= valid_day_r_a,
         value = "")
     r_day_A
@@ -542,26 +582,29 @@ def __(mo, radar_A_dropdown, valid_repdays):
 
 @app.cell
 def __(mo):
-    radar_B_dropdown = mo.ui.array([mo.ui.dropdown(
-            label="Select Case City",
+    radar_B_case_name = mo.ui.dropdown(
+            label="Select Case City:",
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
-            value = "houston"),
-        mo.ui.dropdown(
-            label="Select System Type",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")],
-        label = 'Configuration Options for Radat Plot B')
-    radar_B_dropdown
-    return radar_B_dropdown,
-
+            value = "santabarbara")
+    radar_B_case_name
+    return radar_B_case_name
 
 @app.cell
-def __(mo, radar_B_dropdown, valid_repdays):
-    valid_day_r_b = valid_repdays(case_name=radar_B_dropdown.value[0],
-                                  system_type= radar_B_dropdown.value[1],
+def __(mo):
+    radar_B_sys_name = mo.ui.dropdown(
+            label="Select System Type:",
+            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
+            value = "AWT_nominal")
+    radar_B_sys_name
+    return radar_B_sys_name
+
+@app.cell
+def __(mo, radar_B_case_name, radar_B_sys_name, valid_repdays):
+    valid_day_r_b = valid_repdays(case_name=radar_B_case_name.value,
+                                  system_type= radar_B_sys_name.value,
                                   plot_type='radar')
     r_day_B = mo.ui.dropdown(
-        label="Select Representative Day",
+        label="Select Representative Day:",
         options= valid_day_r_b,
         value = "")
     r_day_B
@@ -576,19 +619,21 @@ def __(
     plt,
     r_day_A,
     r_day_B,
-    radar_A_dropdown,
-    radar_B_dropdown,
+    radar_A_case_name,
+    radar_A_sys_name,
+    radar_B_case_name,
+    radar_B_sys_name,
     reformat_case_name,
 ):
-    fig_r = plt.figure()
+    fig_r = plt.figure(figsize = (10, 4))
     ax_rA = plt.subplot(121, projection = 'polar')
     ax_rB = plt.subplot(122, projection='polar')
 
     try: 
-        sim_dataA_r = get_sim_data(radar_A_dropdown.value[0], radar_A_dropdown.value[1], r_day_A.value, 'radar')
+        sim_dataA_r = get_sim_data(radar_A_case_name.value, radar_A_sys_name.value, r_day_A.value, 'radar')
         ax_rA = plot_radar(sim_dataA_r, 
-                       case_name=radar_A_dropdown.value[0],
-                       system_type=radar_A_dropdown.value[1],
+                       case_name=radar_A_case_name.value,
+                       system_type=radar_A_sys_name.value,
                        representative_day=r_day_A.value,
                        ax = ax_rA)
     except:
@@ -596,21 +641,27 @@ def __(
         ax_rA.set_xticklabels([])
         ax_rA.yaxis.grid(False)
         ax_rA.xaxis.grid(False)
-        ax_rA.text(0, 0, 'Data not available',                   
+        if r_day_A.value == "":
+            ax_rA.text(0, 0, 'Select a representative day',                   
                    horizontalalignment='center',
                    verticalalignment='center',
                   fontsize = 8)
+        else:
+            ax_rA.text(0, 0, 'Data not available',                   
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    fontsize = 8)
 
-        ax_rA.set_title('{}\n{}\n{}'.format(full_system_label(radar_A_dropdown.value[1]), 
-                                            reformat_case_name(radar_A_dropdown.value[0]), 
+        ax_rA.set_title('{}\n{}\n{}'.format(full_system_label(radar_A_sys_name.value), 
+                                            reformat_case_name(radar_A_case_name.value), 
                                             r_day_A.value), fontsize = 10, pad=26.1)
 
     try:
 
-        sim_dataB_r = get_sim_data(radar_B_dropdown.value[0], radar_B_dropdown.value[1], r_day_B.value, 'radar')
+        sim_dataB_r = get_sim_data(radar_B_case_name.value, radar_B_sys_name.value, r_day_B.value, 'radar')
         ax_rB = plot_radar(sim_dataB_r,
-                       case_name=radar_B_dropdown.value[0],
-                       system_type=radar_B_dropdown.value[1],
+                       case_name=radar_B_case_name.value,
+                       system_type=radar_B_sys_name.value,
                        representative_day=r_day_B.value, 
                        ax = ax_rB)
     except:
@@ -618,16 +669,22 @@ def __(
         ax_rB.set_xticklabels([])
         ax_rB.yaxis.grid(False)
         ax_rB.xaxis.grid(False)
-        ax_rB.text(0, 0, 'Data not available',                   
+        if r_day_B.value == "":
+            ax_rB.text(0, 0, 'Select a representative day',                   
                    horizontalalignment='center',
                    verticalalignment='center',
                   fontsize = 8)
-        ax_rB.set_title('{}\n{}\n{}'.format(full_system_label(radar_B_dropdown.value[1]), 
-                                            reformat_case_name(radar_B_dropdown.value[0]), 
+        else:
+            ax_rB.text(0, 0, 'Data not available',                   
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    fontsize = 8)
+        ax_rB.set_title('{}\n{}\n{}'.format(full_system_label(radar_B_sys_name.value), 
+                                            reformat_case_name(radar_B_case_name.value), 
                                             r_day_B.value), fontsize = 10, pad=26.1)
 
-    if 'curtailed' in radar_A_dropdown.value[1] or 'curtailed' in radar_B_dropdown.value[1]:
-        plt.figtext(0.5, 0.15, "*Round-trip efficiency is not defined for cases with supply curtailment", ha="center", fontsize=8)
+    if 'curtailed' in radar_A_sys_name.value or 'curtailed' in radar_B_sys_name.value:
+        plt.figtext(0.5, 0.02, "*Round-trip efficiency is not defined for cases with supply curtailment", ha="center", fontsize=8)
 
     fig_r.tight_layout()
     fig_r
@@ -636,44 +693,57 @@ def __(
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("#Flexibility Upgrade Comparison")
+    mo.md("#Levelized Value of Flexibility Comparison")
     return
 
+@app.cell(hide_code=True)
+def __(mo):
+    mo.md("This section compares the levelized value of flexibility for two different configurations.")
+    return
 
 @app.cell
 def __(mo):
-    contour_A_dropdown = mo.ui.array([mo.ui.dropdown(
-            label="Select Case City",
+    contour_A_case_name = mo.ui.dropdown(
+            label="Select Case City:",
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
-            value = "houston"),
-        mo.ui.dropdown(
-            label="Select System Type",
+            value = "santabarbara")
+    contour_A_case_name
+    return contour_A_case_name
+
+@app.cell
+def __(mo):
+    contour_A_sys_name = mo.ui.dropdown(
+            label="Select System Type:",
             options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")],
-        label = 'Configuration Options for Contour Plot A')
-    contour_A_dropdown
-    return contour_A_dropdown,
+            value = "AWT_curtailed")
+    contour_A_sys_name
+    return contour_A_sys_name
 
 
 @app.cell
 def __(mo):
-    contour_B_dropdown = mo.ui.array([mo.ui.dropdown(
-            label="Select Case City",
+    contour_B_case_name = mo.ui.dropdown(
+            label="Select Case City:",
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
-            value = "houston"),
-        mo.ui.dropdown(
-            label="Select System Type",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_nominal")],
-        label = 'Configuration Options for Contour Plot B')
-    contour_B_dropdown
-    return contour_B_dropdown,
+            value = "santabarbara")
+    contour_B_case_name
+    return contour_B_case_name
 
+@app.cell
+def __(mo):
+    contour_B_sys_name = mo.ui.dropdown(
+            label="Select System Type:",
+            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
+            value = "AWT_nominal")
+    contour_B_sys_name
+    return contour_B_sys_name
 
 @app.cell
 def __(
-    contour_A_dropdown,
-    contour_B_dropdown,
+    contour_A_case_name,
+    contour_A_sys_name,
+    contour_B_case_name,
+    contour_B_sys_name,
     full_system_label,
     get_sim_data,
     plot_contour,
@@ -683,15 +753,15 @@ def __(
     fig_c, ax_c = plt.subplots(1,2, figsize = (10,4))
 
     try:
-        sim_dataA_c = get_sim_data(contour_A_dropdown.value[0], contour_A_dropdown.value[1], None, 'contour')
+        sim_dataA_c = get_sim_data(contour_A_case_name.value, contour_A_sys_name.value, None, 'contour')
         fig_c, ax_c[0] = plot_contour(sim_dataA_c, 
-                                      case_name=contour_A_dropdown.value[0],
-                                      system_type=contour_A_dropdown.value[1],
+                                      case_name=contour_A_case_name.value,
+                                      system_type=contour_A_sys_name.value,
                                       fig = fig_c,
                                       ax = ax_c[0])
     except:
-        ax_c[0].set_title('{}\n{}'.format(full_system_label(contour_A_dropdown.value[1]), 
-                                               reformat_case_name(contour_A_dropdown.value[0])),
+        ax_c[0].set_title('{}\n{}'.format(full_system_label(contour_A_sys_name.value), 
+                                               reformat_case_name(contour_A_case_name.value)),
                                                fontsize = 12)
         ax_c[0].text(0.5, 0.5, 'Data not available', 
                       horizontalalignment='center',
@@ -699,18 +769,18 @@ def __(
                       transform=ax_c[0].transAxes)
 
     try:
-        sim_dataB_c = get_sim_data(case_name = contour_B_dropdown.value[0], 
-                                   system_type = contour_B_dropdown.value[1], 
+        sim_dataB_c = get_sim_data(case_name = contour_B_case_name.value, 
+                                   system_type = contour_B_sys_name.value, 
                                    representative_day = None, 
                                    plot_type = 'contour')
         fig_c, ax_c = plot_contour(sim_data = sim_dataB_c, 
-                                   case_name = contour_B_dropdown.value[0],
-                                   system_type = contour_B_dropdown.value[1],
+                                   case_name = contour_B_case_name.value,
+                                   system_type = contour_B_sys_name.value,
                                    fig = fig_c,
                                    ax = ax_c[1])
     except:
-        ax_c[1].set_title('{}\n{}'.format(full_system_label(contour_B_dropdown.value[1]), 
-                                               reformat_case_name(contour_B_dropdown.value[0])),
+        ax_c[1].set_title('{}\n{}'.format(full_system_label(contour_B_sys_name.value), 
+                                               reformat_case_name(contour_B_case_name.value)),
                                                fontsize = 12)
         ax_c[1].text(0.5, 0.5, 'Data not available', 
                       horizontalalignment='center',
