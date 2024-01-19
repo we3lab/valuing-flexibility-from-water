@@ -8,7 +8,7 @@ The associated marimo notebook is under development.
 
 
 ## Data
-Simulation data in this repository is contained within the ```casestudies``` folder. 
+Simulation data in this repository is contained within the ```src/casestudies``` folder. 
 The file hierarchy is as follows:
 ```
   Case studies
