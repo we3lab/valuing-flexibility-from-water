@@ -40,8 +40,8 @@ def __():
          """
          Returns the full system label associated with the given system type."""
          return{
-                'AWT_nominal': 'Advanced Water Treatment Nominal',
-                'AWT_curtailed': 'Advanced Water Treatment Curtailed',
+                'AWT_nominal': 'Advanced Water Treatment: Nominal',
+                'AWT_curtailed': 'Advanced Water Treatment: Curtailed',
                 'WSD': 'Water Distribution',
                 'WWT': 'Wastewater Treatment',
             }[system_type]
@@ -489,10 +489,10 @@ def __(
     try:
         sim_dataA = get_sim_data(ts_A_case_name.value, ts_A_sys_name.value, ts_A_day.value, 'timeseries')
         ax_ts[0] = plot_timeseries(sim_dataA, 
-                       case_name=ts_A_case_name.value,
-                       system_type=ts_A_sys_name.value,
-                       representative_day=ts_A_day.value,
-                               ax = ax_ts[0])
+                        case_name=ts_A_case_name.value,
+                        system_type=ts_A_sys_name.value,
+                        representative_day=ts_A_day.value,
+                                ax = ax_ts[0])
     except:
         ax_ts[0].set_title('{}\n{}\n{}'.format(full_system_label(ts_A_case_name.value), 
                                                reformat_case_name(ts_A_sys_name.value), 
@@ -535,6 +535,7 @@ def __(
 
     fig_ts.tight_layout()
     fig_ts
+
     return ax_ts, fig_ts, sim_dataA, sim_dataB
 
 
