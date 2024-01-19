@@ -7,7 +7,7 @@ The associated marimo notebook is under development.
 
 
 
-## Data Records
+## Data
 Simulation data in this repository is contained within the ```casestudies``` folder. 
 The file hierarchy is as follows:
 ```
@@ -20,6 +20,9 @@ The file hierarchy is as follows:
               |_ Radar Plot Data
 ```
 Case Name : Tariff structure used for flexible operating schema optimization and technoeconomic calculations.
+
 System Type : Advanced Water Treatment (desalination), Water Distribution, or Wastewater treatment.
+
 Plot Type: ```timeseries```, ```radar```, or ```contour```.
+
 Representative day: Single day snapshot (or annualized versions) associated with each tariff structure.
