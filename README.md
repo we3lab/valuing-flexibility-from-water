@@ -10,7 +10,7 @@ The associated journal publication is under review in Nature Water.
 
 The associated marimo notebook is under development.
 
-## Running the Marimo Notebook
+## Interacting with data
 **1. Download the source code**
 
 In your local machine, navigate to a desired directory and run:
