@@ -5,7 +5,32 @@ The associated journal publication is under review.
 
 The associated marimo notebook is under development.
 
+## Running the Marimo Notebook
+**1. Download the source code**
 
+In your local machine, navigate to a desired directory and run:
+```
+git clone https://github.com/we3lab/valuing-flexibility-from-water.git
+```
+Alternatively, you may download the source code from github and unzip in the desired location.
+
+**2. Install dependencies**
+
+Conda:
+```
+conda env create -f environment.yml
+```
+Pip:
+```
+pip install -r requirements.txt
+```
+
+**3. Run notebook locally**
+
+```
+marimo run marimonotebook/lvof.py
+```
+If using a conda environment, ensure the environment is activated before running marimo.
 
 ## Data
 Configuration options for plotting include:
