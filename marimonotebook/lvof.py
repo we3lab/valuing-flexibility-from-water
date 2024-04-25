@@ -48,6 +48,17 @@ def __():
                 'WWT': 'Wastewater Treatment',
             }[system_type]
 
+    def shortened_system_type(system_label):
+        """
+        Returns the system type associated with the full system label
+        """
+        return{
+                'Advanced Water Treatment: Nominal': 'AWT_nominal',
+                'Advanced Water Treatment: Curtailed':'AWT_curtailed',
+                'Water Distribution' : 'WSD',
+                'Wastewater Treatment':'WWT',
+            }[system_label]
+
     def reformat_case_name(case_name):
          """
          Returns the full system label associated with the given system type."""
@@ -414,6 +425,7 @@ def __():
         plot_timeseries,
         plt,
         reformat_case_name,
+        shortened_system_type,
         system_face_color,
         system_line_color,
         timedelta,
@@ -439,7 +451,7 @@ def __(mo):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     ts_A_case_name = mo.ui.dropdown(
             label="Select Case City:",
@@ -449,20 +461,26 @@ def __(mo):
     return ts_A_case_name,
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     ts_A_sys_name = mo.ui.dropdown(
             label="Select System Type:",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")
+            options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
+            value = 'Advanced Water Treatment: Curtailed')
     ts_A_sys_name
     return ts_A_sys_name,
 
 
-@app.cell(hide_code=True)
-def __(mo, ts_A_case_name, ts_A_sys_name, valid_repdays):
+@app.cell
+def __(
+    mo,
+    shortened_system_type,
+    ts_A_case_name,
+    ts_A_sys_name,
+    valid_repdays,
+):
     valid_day_ts_a = valid_repdays(case_name=ts_A_case_name.value,
-                                  system_type= ts_A_sys_name.value,
+                                  system_type= shortened_system_type(ts_A_sys_name.value),
                                   plot_type='timeseries')
     ts_A_day = mo.ui.dropdown(
             label="Select Representative Day:",
@@ -488,20 +506,26 @@ def __(mo):
     return ts_B_case_name,
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     ts_B_sys_name = mo.ui.dropdown(
             label="Select System Type:",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_nominal")
+            options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
+            value = 'Wastewater Treatment')
     ts_B_sys_name
     return ts_B_sys_name,
 
 
-@app.cell(hide_code=True)
-def __(mo, ts_B_case_name, ts_B_sys_name, valid_repdays):
+@app.cell
+def __(
+    mo,
+    shortened_system_type,
+    ts_B_case_name,
+    ts_B_sys_name,
+    valid_repdays,
+):
     valid_day_ts_b = valid_repdays(case_name=ts_B_case_name.value,
-                                  system_type= ts_B_sys_name.value,
+                                  system_type= shortened_system_type(ts_B_sys_name.value),
                                   plot_type='timeseries')
     ts_B_day = mo.ui.dropdown(
             label="Select Representative Day",
@@ -518,6 +542,7 @@ def __(
     plot_timeseries,
     plt,
     reformat_case_name,
+    shortened_system_type,
     ts_A_case_name,
     ts_A_day,
     ts_A_sys_name,
@@ -529,18 +554,20 @@ def __(
 
     try:
         if ts_A_day.value == "":
-            ax_ts[0].set_title('{}\n{}\n{}'.format(full_system_label(ts_A_case_name.value), 
-                                               reformat_case_name(ts_A_sys_name.value), 
+            ax_ts[0].set_title('{}\n{}\n{}'.format(full_system_label(ts_A_sys_name.value), 
+                                               reformat_case_name(ts_A_case_name.value), 
                                                ts_A_day.value), 
                                                fontsize = 12)
             ax_ts[0].text(0.5, 0.5, 'Select a representative day', 
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[0].transAxes)
-        sim_dataA = get_ts_data(ts_A_case_name.value, ts_A_sys_name.value, ts_A_day.value)
+        sim_dataA = get_ts_data(ts_A_case_name.value, 
+                                shortened_system_type(ts_A_sys_name.value), 
+                                ts_A_day.value)
         ax_ts[0] = plot_timeseries(sim_dataA, 
                         case_name=ts_A_case_name.value,
-                        system_type=ts_A_sys_name.value,
+                        system_type=shortened_system_type(ts_A_sys_name.value),
                         representative_day=ts_A_day.value,
                                 ax = ax_ts[0])
     except:
@@ -569,17 +596,17 @@ def __(
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[0].transAxes)
-        sim_dataB = get_ts_data(ts_B_case_name.value, ts_B_sys_name.value, ts_B_day.value)
+        sim_dataB = get_ts_data(ts_B_case_name.value, 
+                                shortened_system_type(ts_B_sys_name.value), 
+                                ts_B_day.value)
         ax_ts[1] = plot_timeseries(sim_dataB, 
                        case_name=ts_B_case_name.value,
-                       system_type=ts_B_sys_name.value,
+                       system_type=shortened_system_type(ts_B_sys_name.value),
                        representative_day=ts_B_day.value,
                                ax = ax_ts[1])
 
     except:
-        # ax_ts[1].set_title('{}\n{}\n{}'.format(full_system_label(ts_B_sys_name.value), 
-        #                                        reformat_case_name(ts_B_case_name.value), 
-        #                                        ts_B_day.value), fontsize = 12)
+
         if ts_B_day.value == "":
             ax_ts[1].text(0.5, 0.5, 'Select a representative day', 
                       horizontalalignment='center',
@@ -602,13 +629,13 @@ def __(mo):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     mo.md("This section compares the energy performance metrics of two different configurations.")
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     mo.md("Select the configuration options for the case A.")
     return
@@ -628,8 +655,8 @@ def __(mo):
 def __(mo):
     radar_A_sys_name = mo.ui.dropdown(
             label="Select System Type:",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")
+            options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
+            value = 'Advanced Water Treatment: Curtailed')
     radar_A_sys_name
     return radar_A_sys_name,
 
@@ -647,9 +674,9 @@ def __(mo, radar_A_case_name, radar_A_sys_name, valid_repdays):
     return r_day_A, valid_day_r_a
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
-    mo.md("Select the configuration options for the case A.")
+    mo.md("Select the configuration options for the case B.")
     return
 
 
@@ -667,8 +694,8 @@ def __(mo):
 def __(mo):
     radar_B_sys_name = mo.ui.dropdown(
             label="Select System Type:",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_nominal")
+            options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
+            value = 'Advanced Water Treatment: Nominal')
     radar_B_sys_name
     return radar_B_sys_name,
 
@@ -688,7 +715,6 @@ def __(mo, radar_B_case_name, radar_B_sys_name, valid_repdays):
 
 @app.cell
 def __(
-    full_system_label,
     get_radar_data,
     plot_radar,
     plt,
@@ -699,6 +725,7 @@ def __(
     radar_B_case_name,
     radar_B_sys_name,
     reformat_case_name,
+    shortened_system_type,
 ):
     fig_r = plt.figure(figsize = (10, 4))
     ax_rA = plt.subplot(121, projection = 'polar')
@@ -706,10 +733,12 @@ def __(
 
 
     try: 
-        sim_dataA_r = get_radar_data(radar_A_case_name.value, radar_A_sys_name.value, r_day_A.value)
+        sim_dataA_r = get_radar_data(radar_A_case_name.value, 
+                                     shortened_system_type(radar_A_sys_name.value), 
+                                     r_day_A.value)
         ax_rA = plot_radar(sim_dataA_r, 
                        case_name=radar_A_case_name.value,
-                       system_type=radar_A_sys_name.value,
+                       system_type=shortened_system_type(radar_A_sys_name.value),
                        representative_day=r_day_A.value,
                        ax = ax_rA)
     except:
@@ -728,16 +757,18 @@ def __(
                     verticalalignment='center',
                     fontsize = 8)
 
-        ax_rA.set_title('{}\n{}\n{}'.format(full_system_label(radar_A_sys_name.value), 
+        ax_rA.set_title('{}\n{}\n{}'.format(radar_A_sys_name.value, 
                                             reformat_case_name(radar_A_case_name.value), 
                                             r_day_A.value), fontsize = 10, pad=26.1)
 
     try:
 
-        sim_dataB_r = get_radar_data(radar_B_case_name.value, radar_B_sys_name.value, r_day_B.value)
+        sim_dataB_r = get_radar_data(radar_B_case_name.value, 
+                                     shortened_system_type(radar_B_sys_name.value), 
+                                     r_day_B.value)
         ax_rB = plot_radar(sim_dataB_r,
                        case_name=radar_B_case_name.value,
-                       system_type=radar_B_sys_name.value,
+                       system_type=shortened_system_type(radar_B_sys_name.value),
                        representative_day=r_day_B.value, 
                        ax = ax_rB)
     except:
@@ -755,7 +786,7 @@ def __(
                     horizontalalignment='center',
                     verticalalignment='center',
                     fontsize = 8)
-        ax_rB.set_title('{}\n{}\n{}'.format(full_system_label(radar_B_sys_name.value), 
+        ax_rB.set_title('{}\n{}\n{}'.format(radar_B_sys_name.value, 
                                             reformat_case_name(radar_B_case_name.value), 
                                             r_day_B.value), fontsize = 10, pad=26.1)
 
@@ -795,12 +826,12 @@ def __(mo):
     return contour_A_case_name,
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     contour_A_sys_name = mo.ui.dropdown(
             label="Select System Type:",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_curtailed")
+            options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
+            value = 'Advanced Water Treatment: Curtailed')
     contour_A_sys_name
     return contour_A_sys_name,
 
@@ -821,12 +852,12 @@ def __(mo):
     return contour_B_case_name,
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
     contour_B_sys_name = mo.ui.dropdown(
             label="Select System Type:",
-            options=['AWT_curtailed', 'AWT_nominal', 'WSD', 'WWT'],
-            value = "AWT_nominal")
+            options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
+            value = 'Water Distribution')
     contour_B_sys_name
     return contour_B_sys_name,
 
@@ -866,34 +897,27 @@ def __(
     contour_B_case_name,
     contour_B_sys_name,
     financial_metric,
-    full_system_label,
     get_costing_data,
     interest_rate,
     plot_contour,
     plt,
     reformat_case_name,
+    shortened_system_type,
 ):
     fig_c, ax_c = plt.subplots(1,2, figsize = (10,4))
 
-    # sim_dataA_c = get_costing_data(contour_A_case_name.value, contour_A_sys_name.value)
-    # fig_c, ax_c[0] = plot_contour(sim_dataA_c, 
-    #                               case_name=contour_A_case_name.value,
-    #                               system_type=contour_A_sys_name.value,
-    #                               fig = fig_c,
-    #                               ax = ax_c[0],
-    #                               financial_metric=financial_metric.value)
     try:
-        sim_dataA_c = get_costing_data(contour_A_case_name.value, contour_A_sys_name.value)
+        sim_dataA_c = get_costing_data(contour_A_case_name.value, shortened_system_type(contour_A_sys_name.value))
         fig_c, ax_c[0] = plot_contour(sim_dataA_c, 
                                       case_name=contour_A_case_name.value,
-                                      system_type=contour_A_sys_name.value,
+                                      system_type=shortened_system_type(contour_A_sys_name.value),
                                       fig = fig_c,
                                       ax = ax_c[0],
                                       financial_metric=financial_metric.value,
                                       interest_rate = interest_rate.value)
 
     except:
-        ax_c[0].set_title('{}\n{}'.format(full_system_label(contour_A_sys_name.value), 
+        ax_c[0].set_title('{}\n{}'.format(contour_A_sys_name.value, 
                                                reformat_case_name(contour_A_case_name.value)),
                                                fontsize = 12)
         ax_c[0].text(0.5, 0.5, 'Data not available', 
@@ -903,16 +927,16 @@ def __(
 
     try:
         sim_dataB_c = get_costing_data(case_name = contour_B_case_name.value, 
-                                   system_type = contour_B_sys_name.value)
+                                   system_type = shortened_system_type(contour_B_sys_name.value))
         fig_c, ax_c = plot_contour(sim_data = sim_dataB_c, 
                                    case_name = contour_B_case_name.value,
-                                   system_type = contour_B_sys_name.value,
+                                   system_type = shortened_system_type(contour_B_sys_name.value),
                                    fig = fig_c,
                                    ax = ax_c[1],
                                    financial_metric=financial_metric.value,
                                    interest_rate = interest_rate.value)
     except:
-        ax_c[1].set_title('{}\n{}'.format(full_system_label(contour_B_sys_name.value), 
+        ax_c[1].set_title('{}\n{}'.format(contour_B_sys_name.value, 
                                                reformat_case_name(contour_B_case_name.value)),
                                                fontsize = 12)
         ax_c[1].text(0.5, 0.5, 'Data not available', 
@@ -922,8 +946,6 @@ def __(
 
     fig_c.tight_layout()
     fig_c
-    # plt.sca(ax_c)
-    # mo.mpl.interactive(plt.gcf())
     return ax_c, fig_c, sim_dataA_c, sim_dataB_c
 
 
