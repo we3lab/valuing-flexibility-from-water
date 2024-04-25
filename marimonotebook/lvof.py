@@ -91,7 +91,7 @@ def __():
                     system_type,
                     representative_day, 
                     ax=None, **kwargs):
-        
+
         # get timing parameters
         t = [datetime.strptime(date, '%Y-%m-%d %H:%M:%S') for date in sim_data['DateTime']]
         dT = (t[1] - t[0]).total_seconds()/3600          # time step in hours
@@ -366,7 +366,7 @@ def __():
             """
             Parses the file hierarchy to find the data for the given case.
             """
-            filepath = "timeseries/{}/{}/".format(system_type, case_name)
+            filepath = "marimonotebook/timeseries/{}/{}/".format(system_type, case_name)
 
             # get the appropriate directory
             dir = os.path.join(os.getcwd(), filepath)
@@ -382,7 +382,7 @@ def __():
     def get_radar_data(case_name,
                       system_type,
                       representative_day):
-            filepath = "radarplots/{}/{}/{}.json".format(case_name,
+            filepath = "marimonotebook/radarplots/{}/{}/{}.json".format(case_name,
                                                   system_type,
                                                  representative_day.split("/")[0])
             filepath = os.path.join(os.getcwd(), filepath)
@@ -392,7 +392,7 @@ def __():
     def get_costing_data(case_name, 
                         system_type):
 
-            filepath = "costing/{}/{}.json".format(case_name, system_type)
+            filepath = "marimonotebook/costing/{}/{}.json".format(case_name, system_type)
             filepath = os.path.join(os.getcwd(), filepath)
             return json.load(open(filepath))
     return (
@@ -537,13 +537,12 @@ def __(
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[0].transAxes)
-        else:
-            sim_dataA = get_ts_data(ts_A_case_name.value, ts_A_sys_name.value, ts_A_day.value)
-            ax_ts[0] = plot_timeseries(sim_dataA, 
-                            case_name=ts_A_case_name.value,
-                            system_type=ts_A_sys_name.value,
-                            representative_day=ts_A_day.value,
-                                    ax = ax_ts[0])
+        sim_dataA = get_ts_data(ts_A_case_name.value, ts_A_sys_name.value, ts_A_day.value)
+        ax_ts[0] = plot_timeseries(sim_dataA, 
+                        case_name=ts_A_case_name.value,
+                        system_type=ts_A_sys_name.value,
+                        representative_day=ts_A_day.value,
+                                ax = ax_ts[0])
     except:
         # ax_ts[0].set_title('{}\n{}\n{}'.format(full_system_label(ts_A_case_name.value), 
         #                                        reformat_case_name(ts_A_sys_name.value), 
