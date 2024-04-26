@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.1.81"
+__generated_with = "0.4.5"
 app = marimo.App(width="full")
 
 
@@ -283,6 +283,7 @@ def __():
                         system_type,
                         financial_metric,
                         interest_rate,
+                        om_cost_annum,
                         fig = None,
                         ax=None):
             # plot the timeseries on the same subplot
@@ -303,7 +304,7 @@ def __():
             if ax is None or fig is None:
                 fig, ax = plt.subplots(dpi = 300, figsize = (8,6))
 
-            benefits = sim_data["annualized_benefit"]
+            benefits = sim_data["annualized_benefit"] + 10000 - om_cost_annum
             discharge = sim_data["annualized_discharge_capacity"]
 
             lifetime = np.linspace(5, 30, 26).astype(int)
@@ -868,14 +869,26 @@ def __(mo):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
+def __(mo):
+    om_cost_annum = mo.ui.slider(
+        start = -10000.,
+        stop = 100000,
+        step = 5000,
+        value = 10000,
+        label = 'Annual change in labor/maintainance costs due to flexibility [$]')
+    om_cost_annum
+    return om_cost_annum,
+
+
+@app.cell
 def __(mo):
     interest_rate = mo.ui.slider(
         start = 0.,
         stop = 0.10,
         step = 0.01,
         value = 0.03,
-        label = 'Interest rate')
+        label = 'Interest rate [-]')
     interest_rate
     return interest_rate,
 
@@ -899,6 +912,7 @@ def __(
     financial_metric,
     get_costing_data,
     interest_rate,
+    om_cost_annum,
     plot_contour,
     plt,
     reformat_case_name,
@@ -911,6 +925,7 @@ def __(
         fig_c, ax_c[0] = plot_contour(sim_dataA_c, 
                                       case_name=contour_A_case_name.value,
                                       system_type=shortened_system_type(contour_A_sys_name.value),
+                                      om_cost_annum=om_cost_annum.value,
                                       fig = fig_c,
                                       ax = ax_c[0],
                                       financial_metric=financial_metric.value,
@@ -931,6 +946,7 @@ def __(
         fig_c, ax_c = plot_contour(sim_data = sim_dataB_c, 
                                    case_name = contour_B_case_name.value,
                                    system_type = shortened_system_type(contour_B_sys_name.value),
+                                   om_cost_annum=om_cost_annum.value,
                                    fig = fig_c,
                                    ax = ax_c[1],
                                    financial_metric=financial_metric.value,
