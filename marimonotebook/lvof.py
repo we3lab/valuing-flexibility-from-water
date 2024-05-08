@@ -5,6 +5,21 @@ app = marimo.App(width="full")
 
 
 @app.cell
+def __(mo):
+    mo.md("##Overview")
+    return
+
+
+@app.cell
+def __(mo):
+    paper_link = 'https://we3lab.stanford.edu/lvof'
+    we3lab_link = 'https://we3lab.stanford.edu'
+    nawi_link = 'https://www.nawihub.org'
+    mo.md("This page enables interaction with the supplemental data from the paper titled \'Valuing Energy Flexibility from Water Systems.\' Each data point and plot is generated from the solution to an optimization problem, detailed within the paper [Rao et al. (2024)]({}). The methods and analysis is part of a broader research effort within the [Water Energy Efficiency & Environment Lab]({}) at Stanford University, funded by the [National Alliance for Water Innovation]({})".format(paper_link, we3lab_link,nawi_link))
+    return nawi_link, paper_link, we3lab_link
+
+
+@app.cell
 def __():
     import marimo as mo
     import pandas as pd
@@ -434,9 +449,9 @@ def __():
     )
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
-    mo.md("#Operating Schema Comparison")
+    mo.md("##Operating Schema Comparison")
     return
 
 
@@ -624,9 +639,9 @@ def __(
     return ax_ts, fig_ts, sim_dataA, sim_dataB
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
-    mo.md("#Energy Performance Metrics Comparison")
+    mo.md("##Energy Performance Metrics Comparison")
     return
 
 
@@ -799,9 +814,9 @@ def __(
     return ax_rA, ax_rB, fig_r, sim_dataA_r, sim_dataB_r
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(mo):
-    mo.md("#Levelized Value of Flexibility Comparison")
+    mo.md("##Levelized Value of Flexibility Comparison")
     return
 
 
