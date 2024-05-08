@@ -6,7 +6,7 @@ app = marimo.App(width="full")
 
 @app.cell
 def __(mo):
-    mo.md("##Overview")
+    mo.md("#Overview")
     return
 
 
@@ -15,7 +15,7 @@ def __(mo):
     paper_link = 'https://we3lab.stanford.edu/lvof'
     we3lab_link = 'https://we3lab.stanford.edu'
     nawi_link = 'https://www.nawihub.org'
-    mo.md("This page enables interaction with the supplemental data from the paper titled \'Valuing Energy Flexibility from Water Systems.\' Each data point and plot is generated from the solution to an optimization problem, detailed within the paper [Rao et al. (2024)]({}). The methods and analysis is part of a broader research effort within the [Water Energy Efficiency & Environment Lab]({}) at Stanford University, funded by the [National Alliance for Water Innovation]({})".format(paper_link, we3lab_link,nawi_link))
+    mo.md("This page contains interactive visualizations of the data associated with the paper titled \'Valuing Energy Flexibility from Water Systems\' by [Rao et al. (2024)]({}). The study is part of a broader research effort by the [Water Energy Efficiency & Environment Lab]({}) at Stanford University to understand the value and effectiveness of industrial flexibility. This work was funded by the [National Alliance for Water Innovation]({})".format(paper_link, we3lab_link,nawi_link))
     return nawi_link, paper_link, we3lab_link
 
 
