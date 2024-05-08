@@ -2,7 +2,7 @@
 
 <img src="https://github.com/we3lab/valuing-flexibility-from-water/blob/main/figures/png/figure2.png" width="50%" align="right">
 
-This repository contains data and plotting functions associated with the paper titled: "Valuing Energy Flexibility from Water Systems".
+This repository contains data and plotting functions associated with the paper titled: *Valuing Energy Flexibility from Water Systems*.
 
 
 The associated journal publication is under review in Nature Water.
