@@ -16,7 +16,7 @@ def __(mo):
     github_link = 'https://github.com/we3lab/valuing-flexibility-from-water'
     we3lab_link = 'https://we3lab.stanford.edu'
     nawi_link = 'https://www.nawihub.org/wp-content/uploads/sites/16/2024/03/3.24-Meagan-Mauter-Open-Source-Platform-for-Assessing-the-Cost-and-Carbon-Benefits-of-Flexible-Desalination.pdf'
-    mo.md("This page contains interactive visualizations associated with the paper titled *Valuing Energy Flexibility from Water Systems* by Rao et al. (2024)([paper]({}), [code]({})). The study is part of a broader research effort by the [Water Energy Efficiency & Environment Lab]({}) at Stanford University to understand the value and effectiveness of industrial flexibility. This work was funded by the [National Alliance for Water Innovation]({}).".format(paper_link, github_link, we3lab_link,nawi_link))
+    mo.md("This page contains interactive visualizations associated with the paper titled *Valuing Energy Flexibility from Water Systems* by Rao et al. (2024) ([paper]({}), [code]({})). The study is part of a broader research effort by the [Water Energy Efficiency & Environment Lab]({}) at Stanford University to understand the value of industrial flexibility for decarbonization. This work was funded by the [National Alliance for Water Innovation]({}).".format(paper_link, github_link, we3lab_link,nawi_link))
     return nawi_link, paper_link, we3lab_link
 
 
@@ -502,7 +502,7 @@ def __(
     ts_A_day = mo.ui.dropdown(
             label="Select Representative Day:",
             options= valid_day_ts_a,
-            value = "")
+            value = valid_day_ts_a[1])
     ts_A_day
     return ts_A_day, valid_day_ts_a
 
@@ -686,7 +686,7 @@ def __(mo, radar_A_case_name, radar_A_sys_name, valid_repdays):
     r_day_A = mo.ui.dropdown(
         label="Select Representative Day:",
         options= valid_day_r_a,
-        value = "")
+        value = valid_day_r_a[1])
     r_day_A
     return r_day_A, valid_day_r_a
 
