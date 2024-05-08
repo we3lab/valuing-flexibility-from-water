@@ -378,11 +378,11 @@ def __():
             """
             Parses the file hierarchy to find the data for the given case.
             """
-            filepath = "marimonotebook/timeseries/{}/{}/".format(system_type, case_name)
+            filepath = "timeseries/{}/{}/".format(system_type, case_name)
 
             # get the appropriate directory
-            dir = os.path.join(os.getcwd(), filepath)
-            paths = glob(dir + '*')
+            # dir = os.path.join(os.path.dirname(__file__), filepath)
+            paths = glob(filepath + '*')
 
             for p in paths:
                 if representative_day in p:
@@ -394,18 +394,18 @@ def __():
     def get_radar_data(case_name,
                       system_type,
                       representative_day):
-            filepath = "marimonotebook/radarplots/{}/{}/{}.json".format(case_name,
+            filepath = "radarplots/{}/{}/{}.json".format(case_name,
                                                   system_type,
                                                  representative_day.split("/")[0])
-            filepath = os.path.join(os.getcwd(), filepath)
+            # filepath = os.path.join(os.path.dirname(__file__), filepath)
             return json.load(open(filepath)), filepath
 
 
     def get_costing_data(case_name, 
                         system_type):
 
-            filepath = "marimonotebook/costing/{}/{}.json".format(case_name, system_type)
-            filepath = os.path.join(os.getcwd(), filepath)
+            filepath = "costing/{}/{}.json".format(case_name, system_type)
+            # filepath = os.path.join(os.path.dirname(__file__), filepath)
             return json.load(open(filepath)), filepath
     return (
         datetime,
