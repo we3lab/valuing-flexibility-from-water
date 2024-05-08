@@ -582,7 +582,7 @@ def __(
                       verticalalignment='center', 
                       transform=ax_ts[0].transAxes)
         else:
-            ax_ts[0].text(0.5, 0.5,str(sim_dataA[1]), 
+            ax_ts[0].text(0.5, 0.5, "Data not available", 
                         horizontalalignment='center',
                         verticalalignment='center', 
                         transform=ax_ts[0].transAxes)
@@ -614,7 +614,7 @@ def __(
                       verticalalignment='center', 
                       transform=ax_ts[1].transAxes)
         else:
-            ax_ts[1].text(0.5, 0.5, str(sim_dataB[1]), 
+            ax_ts[1].text(0.5, 0.5, "Data not available", 
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[1].transAxes)
@@ -783,7 +783,7 @@ def __(
                    verticalalignment='center',
                   fontsize = 8)
         else:
-            ax_rB.text(0, 0, str(sim_dataB_r[1]),             # show filepath on plot      
+            ax_rB.text(0, 0, "Data not available",             # show filepath on plot      
                     horizontalalignment='center',
                     verticalalignment='center',
                     fontsize = 8)
@@ -935,7 +935,7 @@ def __(
         ax_c[0].set_title('{}\n{}'.format(contour_A_sys_name.value, 
                                                reformat_case_name(contour_A_case_name.value)),
                                                fontsize = 12)
-        ax_c[0].text(0.5, 0.5, str(sim_dataA_c[1]), # show filepath on plot
+        ax_c[0].text(0.5, 0.5, "Data not available", # show filepath on plot
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_c[0].transAxes)
@@ -955,7 +955,7 @@ def __(
         ax_c[1].set_title('{}\n{}'.format(contour_B_sys_name.value, 
                                                reformat_case_name(contour_B_case_name.value)),
                                                fontsize = 12)
-        ax_c[1].text(0.5, 0.5, str(sim_dataB_c[1]), # show filepath on plot
+        ax_c[1].text(0.5, 0.5, "Data not available", # show filepath on plot
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_c[1].transAxes)
