@@ -19,7 +19,7 @@ EXPOSE 8080
 RUN useradd -m app_user
 USER app_user
 
-CMD [ "marimo", "run", "lvof.py", "--host", "0.0.0.0", "-p", "8080" ]
+CMD [ "marimo", "edit", "lvof.py", "--host", "0.0.0.0", "-p", "8080" ]
 
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD curl -f http://localhost:8080/health || exit 1
