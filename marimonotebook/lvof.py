@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.4.5"
+__generated_with = "0.5.0"
 app = marimo.App(width="full")
 
 
@@ -387,7 +387,7 @@ def __():
             for p in paths:
                 if representative_day in p:
                     sim_data = pd.read_csv(p)
-                    return sim_data
+                    return sim_data, p
                 else:
                     pass
 
@@ -398,7 +398,7 @@ def __():
                                                   system_type,
                                                  representative_day.split("/")[0])
             filepath = os.path.join(os.getcwd(), filepath)
-            return json.load(open(filepath))
+            return json.load(open(filepath)), filepath
 
 
     def get_costing_data(case_name, 
@@ -406,7 +406,7 @@ def __():
 
             filepath = "marimonotebook/costing/{}/{}.json".format(case_name, system_type)
             filepath = os.path.join(os.getcwd(), filepath)
-            return json.load(open(filepath))
+            return json.load(open(filepath)), filepath
     return (
         datetime,
         full_system_label,
@@ -566,7 +566,7 @@ def __(
         sim_dataA = get_ts_data(ts_A_case_name.value, 
                                 shortened_system_type(ts_A_sys_name.value), 
                                 ts_A_day.value)
-        ax_ts[0] = plot_timeseries(sim_dataA, 
+        ax_ts[0] = plot_timeseries(sim_dataA[0], 
                         case_name=ts_A_case_name.value,
                         system_type=shortened_system_type(ts_A_sys_name.value),
                         representative_day=ts_A_day.value,
@@ -582,7 +582,7 @@ def __(
                       verticalalignment='center', 
                       transform=ax_ts[0].transAxes)
         else:
-            ax_ts[0].text(0.5, 0.5, 'Data not available', 
+            ax_ts[0].text(0.5, 0.5,str(sim_dataA[1]), 
                         horizontalalignment='center',
                         verticalalignment='center', 
                         transform=ax_ts[0].transAxes)
@@ -600,7 +600,7 @@ def __(
         sim_dataB = get_ts_data(ts_B_case_name.value, 
                                 shortened_system_type(ts_B_sys_name.value), 
                                 ts_B_day.value)
-        ax_ts[1] = plot_timeseries(sim_dataB, 
+        ax_ts[1] = plot_timeseries(sim_dataB[0], 
                        case_name=ts_B_case_name.value,
                        system_type=shortened_system_type(ts_B_sys_name.value),
                        representative_day=ts_B_day.value,
@@ -614,7 +614,7 @@ def __(
                       verticalalignment='center', 
                       transform=ax_ts[1].transAxes)
         else:
-            ax_ts[1].text(0.5, 0.5, 'Data not available', 
+            ax_ts[1].text(0.5, 0.5, str(sim_dataB[1]), 
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_ts[1].transAxes)
@@ -737,7 +737,7 @@ def __(
         sim_dataA_r = get_radar_data(radar_A_case_name.value, 
                                      shortened_system_type(radar_A_sys_name.value), 
                                      r_day_A.value)
-        ax_rA = plot_radar(sim_dataA_r, 
+        ax_rA = plot_radar(sim_dataA_r[0], 
                        case_name=radar_A_case_name.value,
                        system_type=shortened_system_type(radar_A_sys_name.value),
                        representative_day=r_day_A.value,
@@ -767,7 +767,7 @@ def __(
         sim_dataB_r = get_radar_data(radar_B_case_name.value, 
                                      shortened_system_type(radar_B_sys_name.value), 
                                      r_day_B.value)
-        ax_rB = plot_radar(sim_dataB_r,
+        ax_rB = plot_radar(sim_dataB_r[0],
                        case_name=radar_B_case_name.value,
                        system_type=shortened_system_type(radar_B_sys_name.value),
                        representative_day=r_day_B.value, 
@@ -783,7 +783,7 @@ def __(
                    verticalalignment='center',
                   fontsize = 8)
         else:
-            ax_rB.text(0, 0, 'Data not available',                   
+            ax_rB.text(0, 0, str(sim_dataB_r[1]),             # show filepath on plot      
                     horizontalalignment='center',
                     verticalalignment='center',
                     fontsize = 8)
@@ -922,7 +922,7 @@ def __(
 
     try:
         sim_dataA_c = get_costing_data(contour_A_case_name.value, shortened_system_type(contour_A_sys_name.value))
-        fig_c, ax_c[0] = plot_contour(sim_dataA_c, 
+        fig_c, ax_c[0] = plot_contour(sim_dataA_c[0], 
                                       case_name=contour_A_case_name.value,
                                       system_type=shortened_system_type(contour_A_sys_name.value),
                                       om_cost_annum=om_cost_annum.value,
@@ -935,7 +935,7 @@ def __(
         ax_c[0].set_title('{}\n{}'.format(contour_A_sys_name.value, 
                                                reformat_case_name(contour_A_case_name.value)),
                                                fontsize = 12)
-        ax_c[0].text(0.5, 0.5, 'Data not available', 
+        ax_c[0].text(0.5, 0.5, str(sim_dataA_c[1]), # show filepath on plot
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_c[0].transAxes)
@@ -943,7 +943,7 @@ def __(
     try:
         sim_dataB_c = get_costing_data(case_name = contour_B_case_name.value, 
                                    system_type = shortened_system_type(contour_B_sys_name.value))
-        fig_c, ax_c = plot_contour(sim_data = sim_dataB_c, 
+        fig_c, ax_c = plot_contour(sim_data = sim_dataB_c[0], 
                                    case_name = contour_B_case_name.value,
                                    system_type = shortened_system_type(contour_B_sys_name.value),
                                    om_cost_annum=om_cost_annum.value,
@@ -955,7 +955,7 @@ def __(
         ax_c[1].set_title('{}\n{}'.format(contour_B_sys_name.value, 
                                                reformat_case_name(contour_B_case_name.value)),
                                                fontsize = 12)
-        ax_c[1].text(0.5, 0.5, 'Data not available', 
+        ax_c[1].text(0.5, 0.5, str(sim_dataB_c[1]), # show filepath on plot
                       horizontalalignment='center',
                       verticalalignment='center', 
                       transform=ax_c[1].transAxes)
