@@ -17,7 +17,7 @@ def __(mo):
     we3lab_link = 'https://we3lab.stanford.edu'
     nawi_link = 'https://www.nawihub.org/wp-content/uploads/sites/16/2024/03/3.24-Meagan-Mauter-Open-Source-Platform-for-Assessing-the-Cost-and-Carbon-Benefits-of-Flexible-Desalination.pdf'
     mo.md("This page contains interactive visualizations associated with the paper titled *Valuing Energy Flexibility from Water Systems* by Rao et al. (2024) ([paper]({}), [code]({})). The study is part of a broader research effort by the [Water Energy Efficiency & Environment Lab]({}) at Stanford University to understand the value of industrial flexibility for decarbonization. This work was funded by the [National Alliance for Water Innovation]({}).".format(paper_link, github_link, we3lab_link,nawi_link))
-    return nawi_link, paper_link, we3lab_link
+    return github_link, nawi_link, paper_link, we3lab_link
 
 
 @app.cell
@@ -88,7 +88,7 @@ def __():
 
     def valid_repdays(case_name, system_type, plot_type):
         days = [""]
-        if 'wwt' in system_type.lower() or case_name == 'sanjose':
+        if 'wastewater' in system_type.lower() or 'wwt' in system_type.lower() or case_name == 'sanjose':
             days.append('Winter')
             days.append('Spring')
             days.append('Summer')
@@ -108,9 +108,8 @@ def __():
                 days.append('SummerWeekday')
                 days.append('WinterWeekday')
                 days.append('Weekend')
-        if plot_type == 'radar':
-            if 'Annualized' not in days:
-                days.append('Annualized')
+        if plot_type == 'radar' and 'Annualized' not in days:
+            days.append('Annualized')
         return days
 
     def plot_timeseries(sim_data,
@@ -184,8 +183,8 @@ def __():
             Plots the radar chart associated with the given case.
             """
             RTE = sim_data['rte']
-            EnergyCapacity = sim_data['ed_n']
-            PowerCapacity = sim_data['pd_n']
+            EnergyCapacity = sim_data['ed_normalized']
+            PowerCapacity = sim_data['p_normalized']
 
             LABELS = ["Round-Trip\nEfficiency", 
                             "Energy\nCapacity\n(Normalized)", 
@@ -394,34 +393,22 @@ def __():
             """
             Parses the file hierarchy to find the data for the given case.
             """
-            filepath = "timeseries/{}/{}/".format(system_type, case_name)
-
-            # get the appropriate directory
-            # dir = os.path.join(os.path.dirname(__file__), filepath)
-            paths = glob(filepath + '*')
-
-            for p in paths:
-                if representative_day in p:
-                    sim_data = pd.read_csv(p)
-                    return sim_data, p
-                else:
-                    pass
+            filepath = "marimonotebook/timeseries/{}/{}/{}.csv".format(system_type,case_name,representative_day)
+            return pd.read_csv(filepath), filepath
 
     def get_radar_data(case_name,
                       system_type,
                       representative_day):
-            filepath = "radarplots/{}/{}/{}.json".format(case_name,
-                                                  system_type,
-                                                 representative_day.split("/")[0])
-            # filepath = os.path.join(os.path.dirname(__file__), filepath)
+            filepath = "marimonotebook/casestudies/{}/{}/{}/radar.json".format(case_name,
+                                                                               system_type,
+                                                                               representative_day.split('/')[0])
             return json.load(open(filepath)), filepath
 
 
     def get_costing_data(case_name, 
                         system_type):
 
-            filepath = "costing/{}/{}.json".format(case_name, system_type)
-            # filepath = os.path.join(os.path.dirname(__file__), filepath)
+            filepath = "marimonotebook/costing/{}/{}.json".format(case_name, system_type)
             return json.load(open(filepath)), filepath
     return (
         datetime,
@@ -452,7 +439,7 @@ def __():
 
 @app.cell
 def __(mo):
-    mo.md("##Operating Schema Comparison")
+    mo.md("#Operating Schema Comparison")
     return
 
 
@@ -642,7 +629,7 @@ def __(
 
 @app.cell
 def __(mo):
-    mo.md("##Energy Performance Metrics Comparison")
+    mo.md("#Energy Performance Metrics Comparison")
     return
 
 
@@ -731,6 +718,12 @@ def __(mo, radar_B_case_name, radar_B_sys_name, valid_repdays):
 
 
 @app.cell
+def __(radar_B_sys_name):
+    print(radar_B_sys_name.value)
+    return
+
+
+@app.cell
 def __(
     get_radar_data,
     plot_radar,
@@ -748,8 +741,7 @@ def __(
     ax_rA = plt.subplot(121, projection = 'polar')
     ax_rB = plt.subplot(122, projection='polar')
 
-
-    try: 
+    try:
         sim_dataA_r = get_radar_data(radar_A_case_name.value, 
                                      shortened_system_type(radar_A_sys_name.value), 
                                      r_day_A.value)
@@ -817,7 +809,7 @@ def __(
 
 @app.cell
 def __(mo):
-    mo.md("##Levelized Value of Flexibility Comparison")
+    mo.md("#Levelized Value of Flexibility Comparison")
     return
 
 
