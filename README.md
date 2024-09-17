@@ -5,7 +5,7 @@
 This repository contains data and plotting functions associated with the paper titled: *Valuing Energy Flexibility from Water Systems*.
 
 
-The associated journal publication is under review in Nature Water.
+The associated manuscript is accepted and awaiting publication in Nature Water.
 
 
 An web-app with interactive plots is available at: https://lvof.we3lab.tech
