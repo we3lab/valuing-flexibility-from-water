@@ -393,13 +393,13 @@ def __():
             """
             Parses the file hierarchy to find the data for the given case.
             """
-            filepath = "marimonotebook/timeseries/{}/{}/{}.csv".format(system_type,case_name,representative_day)
+            filepath = "timeseries/{}/{}/{}.csv".format(system_type,case_name,representative_day)
             return pd.read_csv(filepath), filepath
 
     def get_radar_data(case_name,
                       system_type,
                       representative_day):
-            filepath = "marimonotebook/casestudies/{}/{}/{}/radar.json".format(case_name,
+            filepath = "casestudies/{}/{}/{}/radar.json".format(case_name,
                                                                                system_type,
                                                                                representative_day.split('/')[0])
             return json.load(open(filepath)), filepath
@@ -408,7 +408,7 @@ def __():
     def get_costing_data(case_name, 
                         system_type):
 
-            filepath = "marimonotebook/costing/{}/{}.json".format(case_name, system_type)
+            filepath = "costing/{}/{}.json".format(case_name, system_type)
             return json.load(open(filepath)), filepath
     return (
         datetime,
