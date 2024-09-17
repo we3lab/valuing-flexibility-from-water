@@ -8,7 +8,7 @@ This repository contains data and plotting functions associated with the paper t
 The associated manuscript is accepted and awaiting publication in Nature Water.
 
 
-An web-app with interactive plots is available at: https://lvof.we3lab.tech
+A web-app with interactive plots is available at: https://lvof.we3lab.tech
 
 ## Interacting with data
 **1. Download the source code**
