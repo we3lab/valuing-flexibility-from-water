@@ -12,11 +12,11 @@ def __(mo):
 
 @app.cell
 def __(mo):
-    paper_link = 'https://we3lab.stanford.edu/lvof'
+    paper_link = 'https://www.nature.com/articles/s44221-024-00316-4'
     github_link = 'https://github.com/we3lab/valuing-flexibility-from-water'
     we3lab_link = 'https://we3lab.stanford.edu'
     nawi_link = 'https://www.nawihub.org/wp-content/uploads/sites/16/2024/03/3.24-Meagan-Mauter-Open-Source-Platform-for-Assessing-the-Cost-and-Carbon-Benefits-of-Flexible-Desalination.pdf'
-    mo.md("This page contains interactive visualizations associated with the paper titled *Valuing Energy Flexibility from Water Systems* by Rao et al. (2024) ([code]({})). The study is part of a broader research effort by the [Water Energy Efficiency & Environment Lab]({}) at Stanford University to understand the value of industrial flexibility for decarbonization. This work was funded by the [National Alliance for Water Innovation]({}).".format(paper_link, github_link, we3lab_link,nawi_link))
+    mo.md("This page contains interactive visualizations associated with the paper titled *Valuing Energy Flexibility from Water Systems* by Rao et al. (2024) ([paper]({}),[data]({})). The study is part of a broader research effort by the [Water Energy Efficiency & Environment Lab]({}) at Stanford University to understand the value of industrial flexibility for decarbonization. This work was funded by the [National Alliance for Water Innovation]({}).".format(paper_link, github_link, we3lab_link,nawi_link))
     return github_link, nawi_link, paper_link, we3lab_link
 
 
