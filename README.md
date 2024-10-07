@@ -32,7 +32,8 @@ pip install -r requirements.txt
 **3. Run notebook locally**
 
 ```
-marimo run marimonotebook/lvof.py
+cd marimonotebook
+marimo run lvof.py
 ```
 If using a conda environment, ensure the environment is activated before running marimo.
 
