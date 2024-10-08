@@ -49,7 +49,7 @@ cd marimonotebook
 uvx marimo run --sandbox lvof.py
 ```
 
-To edit the notebook source code, replace `run` with `edit` in the above commands.
+To edit the notebook source code, replace `run` with `edit` in the above command.
 
 If you don't have `uv` installed, you can use:
 
