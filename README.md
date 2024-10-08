@@ -20,7 +20,18 @@ Alternatively, you may download the source code from github and unzip in the des
 
 **2. Install dependencies**
 
+uv (for [marimo notebooks](https://marimo.io/)) - *Recommended*
+
+Installing [uv](https://github.com/astral-sh/uv) allows you to run the notebooks which have inline scripts containing the required packages in an [isolated virtual environment.](https://marimo.io/blog/sandboxed-notebooks). The `marimonotebook\lvof.py` notebook in this repo has it's package dependencies inlined.
+
+```
+pip install uv
+```
+
 Conda:
+
+Ensure the conda environment is activated before running marimo.
+
 ```
 conda env create -f environment.yml
 ```
@@ -31,11 +42,24 @@ pip install -r requirements.txt
 
 **3. Run notebook locally**
 
+uv installed:
+
 ```
+cd marimonotebook
+uvx marimo run --sandbox lvof.py
+```
+
+To edit the notebook source code, replace `run` with `edit` in the above commands.
+
+If you don't have `uv` installed, you can use:
+
+```shell
 cd marimonotebook
 marimo run lvof.py
 ```
-If using a conda environment, ensure the environment is activated before running marimo.
+
+> [!NOTE]
+> You may need to manually install dependencies if not using `uv`.
 
 ## Data
 Configuration options for plotting include:
