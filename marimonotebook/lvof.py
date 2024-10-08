@@ -1,12 +1,22 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "marimo",
+#     "numpy==2.1.2",
+#     "pandas==2.2.3",
+#     "matplotlib==3.9.2",
+# ]
+# ///
+
 import marimo
 
-__generated_with = "0.5.0"
+__generated_with = "0.9.0"
 app = marimo.App(width="full")
 
 
 @app.cell
 def __(mo):
-    mo.md("#Overview")
+    mo.md("""#Overview""")
     return
 
 
@@ -439,19 +449,19 @@ def __():
 
 @app.cell
 def __(mo):
-    mo.md("#Operating Schema Comparison")
+    mo.md("""#Operating Schema Comparison""")
     return
 
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("This section compares the operating schema of two different configurations.")
+    mo.md("""This section compares the operating schema of two different configurations.""")
     return
 
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("Select the configuration options for the operating schema A.")
+    mo.md("""Select the configuration options for the operating schema A.""")
     return
 
 
@@ -462,7 +472,7 @@ def __(mo):
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
             value = "santabarbara")
     ts_A_case_name
-    return ts_A_case_name,
+    return (ts_A_case_name,)
 
 
 @app.cell
@@ -472,7 +482,7 @@ def __(mo):
             options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
             value = 'Advanced Water Treatment: Curtailed')
     ts_A_sys_name
-    return ts_A_sys_name,
+    return (ts_A_sys_name,)
 
 
 @app.cell
@@ -496,7 +506,7 @@ def __(
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("Select the configuration options for the operating schema B.")
+    mo.md("""Select the configuration options for the operating schema B.""")
     return
 
 
@@ -507,7 +517,7 @@ def __(mo):
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
             value = "santabarbara")
     ts_B_case_name
-    return ts_B_case_name,
+    return (ts_B_case_name,)
 
 
 @app.cell
@@ -517,7 +527,7 @@ def __(mo):
             options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
             value = 'Wastewater Treatment')
     ts_B_sys_name
-    return ts_B_sys_name,
+    return (ts_B_sys_name,)
 
 
 @app.cell
@@ -629,19 +639,19 @@ def __(
 
 @app.cell
 def __(mo):
-    mo.md("#Energy Performance Metrics Comparison")
+    mo.md("""#Energy Performance Metrics Comparison""")
     return
 
 
 @app.cell
 def __(mo):
-    mo.md("This section compares the energy performance metrics of two different configurations.")
+    mo.md("""This section compares the energy performance metrics of two different configurations.""")
     return
 
 
 @app.cell
 def __(mo):
-    mo.md("Select the configuration options for the case A.")
+    mo.md("""Select the configuration options for the case A.""")
     return
 
 
@@ -652,7 +662,7 @@ def __(mo):
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
             value = "santabarbara")
     radar_A_case_name
-    return radar_A_case_name,
+    return (radar_A_case_name,)
 
 
 @app.cell
@@ -662,7 +672,7 @@ def __(mo):
             options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
             value = 'Advanced Water Treatment: Curtailed')
     radar_A_sys_name
-    return radar_A_sys_name,
+    return (radar_A_sys_name,)
 
 
 @app.cell
@@ -680,7 +690,7 @@ def __(mo, radar_A_case_name, radar_A_sys_name, valid_repdays):
 
 @app.cell
 def __(mo):
-    mo.md("Select the configuration options for the case B.")
+    mo.md("""Select the configuration options for the case B.""")
     return
 
 
@@ -691,7 +701,7 @@ def __(mo):
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
             value = "santabarbara")
     radar_B_case_name
-    return radar_B_case_name,
+    return (radar_B_case_name,)
 
 
 @app.cell
@@ -701,7 +711,7 @@ def __(mo):
             options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
             value = 'Advanced Water Treatment: Nominal')
     radar_B_sys_name
-    return radar_B_sys_name,
+    return (radar_B_sys_name,)
 
 
 @app.cell
@@ -809,19 +819,19 @@ def __(
 
 @app.cell
 def __(mo):
-    mo.md("#Levelized Value of Flexibility Comparison")
+    mo.md("""#Levelized Value of Flexibility Comparison""")
     return
 
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("This section compares the levelized value of flexibility for two different configurations.")
+    mo.md("""This section compares the levelized value of flexibility for two different configurations.""")
     return
 
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("Select the configuration options for the case A.")
+    mo.md("""Select the configuration options for the case A.""")
     return
 
 
@@ -832,7 +842,7 @@ def __(mo):
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
             value = "santabarbara")
     contour_A_case_name
-    return contour_A_case_name,
+    return (contour_A_case_name,)
 
 
 @app.cell
@@ -842,12 +852,12 @@ def __(mo):
             options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
             value = 'Advanced Water Treatment: Curtailed')
     contour_A_sys_name
-    return contour_A_sys_name,
+    return (contour_A_sys_name,)
 
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("Select the configuration options for the case B.")
+    mo.md("""Select the configuration options for the case B.""")
     return
 
 
@@ -858,7 +868,7 @@ def __(mo):
             options=["houston", "newyork", "sanjose", "santabarbara", "tampa"],
             value = "santabarbara")
     contour_B_case_name
-    return contour_B_case_name,
+    return (contour_B_case_name,)
 
 
 @app.cell
@@ -868,12 +878,12 @@ def __(mo):
             options= ['Advanced Water Treatment: Nominal','Advanced Water Treatment: Curtailed','Water Distribution','Wastewater Treatment'],
             value = 'Water Distribution')
     contour_B_sys_name
-    return contour_B_sys_name,
+    return (contour_B_sys_name,)
 
 
 @app.cell(hide_code=True)
 def __(mo):
-    mo.md("Select comparison parameters.")
+    mo.md("""Select comparison parameters.""")
     return
 
 
@@ -886,7 +896,7 @@ def __(mo):
         value = 10000,
         label = 'Annual change in labor/maintainance costs due to flexibility [$]')
     om_cost_annum
-    return om_cost_annum,
+    return (om_cost_annum,)
 
 
 @app.cell
@@ -898,7 +908,7 @@ def __(mo):
         value = 0.03,
         label = 'Interest rate [-]')
     interest_rate
-    return interest_rate,
+    return (interest_rate,)
 
 
 @app.cell(hide_code=True)
@@ -908,7 +918,7 @@ def __(mo):
             options=['Value of Flexibility', 'Return on Investment'],
             value = "Value of Flexibility")
     financial_metric
-    return financial_metric,
+    return (financial_metric,)
 
 
 @app.cell
