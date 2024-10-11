@@ -35,7 +35,6 @@ dependencies:
   - libuuid=2.38.1=h0b41bf4_0
   - libxcrypt=4.4.36=hd590300_1
   - libzlib=1.2.13=hd590300_5
-  - marimo=0.1.81=py312h7900ff3_0
   - markdown=3.5.2=pyhd8ed1ab_0
   - matplotlib-inline=0.1.6=pyhd8ed1ab_0
   - mypy_extensions=1.0.0=pyha770c72_0
@@ -87,4 +86,5 @@ dependencies:
       - pyparsing==3.1.1
       - pytz==2023.3.post1
       - tzdata==2023.4
-prefix: /home/akshay/miniconda3/envs/marimo-lvof
+      - marimo==0.9.1
+      - uv==0.4.20

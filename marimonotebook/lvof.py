@@ -718,12 +718,6 @@ def __(mo, radar_B_case_name, radar_B_sys_name, valid_repdays):
 
 
 @app.cell
-def __(radar_B_sys_name):
-    print(radar_B_sys_name.value)
-    return
-
-
-@app.cell
 def __(
     get_radar_data,
     plot_radar,
