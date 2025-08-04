@@ -1,0 +1,26 @@
+preferred-citation:
+  authors:
+  - family-names: "Rao"
+    given-names: "Akshay K."
+    orcid: "https://orcid.org/0000-0002-9054-476X"
+  - family-names: "Musabandesu"
+    given-names: "Erin"
+    orcid: "https://orcid.org/0000-0001-8381-4656"
+  - family-names: "Bolorinos"
+    given-names: "Jose"
+    orcid: "https://orcid.org/0000-0002-3741-5483"
+  - family-names: "Chapin"
+    given-names: "Fletcher T."
+    orcid: "https://orcid.org/0000-0002-2165-7963"
+  - family-names: "Mauter"
+    given-names: "Meagan S."
+    orcid: "https://orcid.org/0000-0002-4932-890X"
+  title: "Valuing energy flexibility from water systems"
+  doi: 10.1038/s44221-024-00316-4
+  date-released: 2024-01-23
+  url: "https://doi.org/10.1038/s44221-024-00316-4"
+  type: article
+  journal: "Nature Water"
+  volume: 2
+  number: 10
+  pages: "1028-1037"
